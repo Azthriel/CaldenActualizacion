@@ -349,6 +349,56 @@ class DevicePageState extends State<DevicePage> {
                   ),
                 ),
               ),
+              if (DeviceManager.getProductCode(deviceName) == '022000_IOT' ||
+                  DeviceManager.getProductCode(deviceName) == '027000_IOT') ...[
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: color3,
+                    foregroundColor: color0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 35, vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    shadowColor: color3.withOpacity(0.4),
+                    elevation: 8,
+                  ),
+                  onPressed: () async {
+                    Map<String, String> links =
+                        (fbData['Links'] as Map<String, dynamic>).map(
+                      (key, value) => MapEntry(
+                        key,
+                        value.toString(),
+                      ),
+                    );
+
+                    String url =
+                        links['${DeviceManager.getProductCode(deviceName)}SD']!;
+                    printLog(url);
+                    try {
+                      String data =
+                          '${DeviceManager.getProductCode(deviceName)}[2]($url)';
+                      await myDevice.toolsUuid.write(data.codeUnits);
+                      printLog('Si mandé ota');
+                    } catch (e, stackTrace) {
+                      printLog('Error al enviar la OTA $e $stackTrace');
+                      showToast('Error al enviar OTA');
+                    }
+                    showToast('Enviando OTA...');
+                  },
+                  child: const Text(
+                    'Actualizar equipo\n(Versión sin sensor)',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: color0,
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(
                 height: 30,
               ),
